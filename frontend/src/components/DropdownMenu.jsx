@@ -14,9 +14,9 @@ const DropdownMenu = ({ openModal }) => {
   const settingsRef = useRef(null);
 
   const linkClasses =
-    "cursor-pointer px-3 py-2 hover:bg-orange-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-orange-500";
+    "cursor-pointer px-3 py-2 hover:bg-slate-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-500";
   const nestedClasses =
-    "cursor-pointer flex gap-2 justify-between items-center px-3 py-2 hover:bg-orange-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-orange-500";
+    "cursor-pointer flex gap-2 justify-between items-center px-3 py-2 hover:bg-slate-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-500";
 
   const closeDropdown = (event) => {
     if (settingsRef.current && !settingsRef.current.contains(event.target)) {
@@ -33,7 +33,7 @@ const DropdownMenu = ({ openModal }) => {
   }, []);
 
   return (
-    <div className="flex h-[32rem] items-start justify-end space-y-2 rounded-lg p-4 md:justify-center md:p-16 dark:bg-slate-900 dark:text-white">
+    <div className="flex h-[32rem] items-start justify-end space-y-2 rounded-lg p-4 md:justify-center md:p-16 dark:bg-black dark:text-white">
       <div className="mx-6 sm:mx-auto">
         <div ref={settingsRef} className="relative">
           <div
@@ -41,7 +41,7 @@ const DropdownMenu = ({ openModal }) => {
               setShowMenu(!showMenu);
               setShowNestedMenu(false);
             }}
-            className="relative flex w-56 cursor-pointer items-center justify-between gap-2 rounded-lg border border-slate-300 bg-white px-2 py-2 focus:outline-none dark:border-slate-600 dark:bg-slate-900"
+            className="relative flex w-56 cursor-pointer items-center justify-between gap-2 rounded-lg border border-slate-300 bg-transparent px-2 py-2 focus:outline-none dark:border-slate-600 dark:bg-transparent"
           >
             <div className="flex items-center gap-2">
               <img
@@ -75,7 +75,7 @@ const DropdownMenu = ({ openModal }) => {
                       <ChevronRightIcon className="size-6" />
                     </div>
                     {showNestedMenu && (
-                      <div className="absolute -right-48 top-0 flex w-48 flex-col rounded-l-lg border border-slate-300 bg-white py-2 dark:border-slate-600 dark:bg-slate-900">
+                      <div className="absolute -right-48 top-0 flex w-48 flex-col rounded-r-lg border border-slate-300 bg-white py-2 dark:border-slate-600 dark:bg-slate-900">
                         <a href="#" className={linkClasses}>
                           Change Email
                         </a>
