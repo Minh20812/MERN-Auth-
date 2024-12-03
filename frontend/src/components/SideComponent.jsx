@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../redux/api/userApiSlice";
 import { logout } from "../redux/feature/auth/authSlice";
+import DropdownMenu from "./DropdownMenu";
 
 const SideComponent = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -67,42 +68,8 @@ const SideComponent = () => {
         </div>
 
         {/* Settings and Logout */}
-        <div className="flex flex-col items-start space-y-2 p-4">
-          <Link
-            to="/settings"
-            className="w-full text-left hover:bg-gray-700 rounded-md px-4 py-2"
-          >
-            Settings
-          </Link>
-          <button
-            onClick={openModal}
-            className="w-full text-left hover:bg-gray-700 rounded-md px-4 py-2"
-          >
-            Logout
-          </button>
-          <button
-            onClick={toggleDropdown}
-            className="w-full text-left hover:bg-gray-700 rounded-md px-4 py-2"
-          >
-            {userInfo?.username}
-          </button>
-          {dropdownOpen && userInfo && (
-            <div className="w-full bg-gray-800 rounded-md shadow-md">
-              {userInfo.isAdmin && (
-                <>
-                  <Link
-                    to="/admin/dashboard"
-                    className="block px-4 py-2 hover:bg-gray-700"
-                  >
-                    Dashboard
-                  </Link>
-                </>
-              )}
-              <Link to="/profile" className="block px-4 py-2 hover:bg-gray-700">
-                Profile
-              </Link>
-            </div>
-          )}
+        <div>
+          <DropdownMenu openModal={openModal} />
         </div>
       </div>
 
