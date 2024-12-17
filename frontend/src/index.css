@@ -1,3 +1,105 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@property --rotation {
+  syntax: "<angle>";
+  initial-value: 0turn;
+  inherits: false;
+}
+
+.animated-border-button {
+  position: relative;
+  /* display: inline-block;
+  font-size: 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px; 
+  overflow: hidden; */
+}
+
+.animated-border-button::before {
+  content: "";
+  position: absolute;
+  inset: -1px; /* Tăng kích thước để hiển thị viền */
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--rotation, 0turn),
+    purple,
+    blue,
+    red,
+    yellow,
+    red,
+    blue,
+    purple
+  );
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+  animation: hue-rotation 5s infinite linear;
+  padding: 2px; /* Đảm bảo gradient chỉ xuất hiện ở viền */
+}
+
+.animated-border-button:hover {
+  transform: scale(1.05); /* Hiệu ứng khi hover */
+  transition: transform 0.2s ease-in-out;
+}
+
+.fancy-glow {
+  position: relative;
+  place-items: center;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    border-color: conic-gradient(
+      from var(--rotation, 0turn),
+      purple,
+      blue,
+      red,
+      yellow,
+      red,
+      blue,
+      purple
+    );
+
+    mask-image: linear-gradient(0deg, black, transparent 10%),
+      linear-gradient(180deg, black, transparent 10%),
+      linear-gradient(90deg, black, transparent 10%),
+      linear-gradient(270deg, black, transparent 10%);
+
+    animation: hue-rotation 5s infinite linear;
+  }
+}
+
+@keyframes hue-rotation {
+  from {
+    --rotation: 0turn;
+  }
+  to {
+    --rotation: 1turn;
+  }
+}
+
+.gradient-text {
+  position: relative;
+  display: inline-block;
+  color: transparent;
+  background-clip: text;
+  background: linear-gradient(
+    to right,
+    #23966c,
+    #faaa54,
+    #e23b4a,
+    #db0768,
+    #360670
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hue-rotation 5s infinite linear;
+}
