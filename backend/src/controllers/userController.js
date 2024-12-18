@@ -1,6 +1,6 @@
 import User from "../models/UserModel.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import createToken from "../utils/createToken.js";
 
 const createUser = asyncHandler(async (req, res) => {
