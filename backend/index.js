@@ -15,7 +15,10 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://mern-auth-five-sooty.vercel.app"],
+    origin: [
+      "https://mern-auth-five-sooty.vercel.app",
+      "https://mern-auth-2sjz41ky1-minh20812s-projects.vercel.app",
+    ],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   })
