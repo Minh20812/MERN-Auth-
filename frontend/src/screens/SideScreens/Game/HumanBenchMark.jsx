@@ -7,20 +7,17 @@ const HumanBenchMark = () => {
   const [playerSequence, setPlayerSequence] = useState([]); // Lựa chọn của người chơi
   const [isStarted, setIsStarted] = useState(false); // Trạng thái khởi động
   const [isGameOver, setIsGameOver] = useState(false); // Trạng thái game
+  const [level, setLevel] = useState(0);
+  const [gameContinute, setGameContinute] = useState(false);
+  const [showNumber, setShowNumber] = useState(false);
 
   useEffect(() => {
     let timeout;
-    if (isStarted && sequence.length < 9) {
+
+    if (isStarted && sequence.length < level) {
       timeout = setTimeout(() => {
         // Lọc ra các số chưa sáng
-        const availableNumbers = [...Array(9).keys()]
-          .map((i) => i + 1)
-          .filter((num) => !sequence.includes(num));
-
-        if (availableNumbers.length === 0) {
-          setIsStarted(false); // Dừng khi đủ 9 số
-          return;
-        }
+        const availableNumbers = [...Array(9).keys()].map((i) => i + 1);
 
         // Chọn ngẫu nhiên một số chưa sáng
         const randomIndex = Math.floor(Math.random() * availableNumbers.length);
@@ -33,14 +30,20 @@ const HumanBenchMark = () => {
         // Tắt ô sau 500ms
         setTimeout(() => {
           setHighlighted(null);
-        }, 500);
-      }, 1000);
+        }, 300);
+      }, 700);
     }
 
     return () => clearTimeout(timeout); // Dọn dẹp timeout khi component unmount
-  }, [isStarted, sequence]);
+  }, [isStarted, sequence, level]);
 
   const handleStart = () => {
+    if (level >= 9) {
+      alert("You've reached the maximum level!");
+      return;
+    }
+    setLevel((prev) => prev + 1);
+    setGameContinute(false);
     setHighlighted(null);
     setSequence([]);
     setPlayerSequence([]);
@@ -60,29 +63,30 @@ const HumanBenchMark = () => {
       if (!isCorrect) {
         setIsGameOver(true); // Sai thì kết thúc game
         alert("Thua game!");
-      } else if (newSequence.length === sequence.length && isCorrect) {
-        setIsGameOver(true); // Đúng và đủ thì thắng
-        alert("Thắng game!");
+      } else if (
+        newSequence.length === sequence.length &&
+        isCorrect &&
+        sequence.length < 9
+      ) {
+        setGameContinute(true);
+      } else if (sequence.length === 9) {
+        setIsGameOver(true);
+        alert("Thắng rồi");
       }
 
       return newSequence;
     });
   };
 
+  const handleShowNumber = () => {
+    setShowNumber(!showNumber);
+  };
+
   return (
     <>
       <div className="h-screen w-full flex flex-col bg-gray-900 text-white rounded-2xl overflow-hidden">
         <BreadCrumb />
-        <div className="flex justify-center items-center py-4">
-          {!isStarted && (
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={handleStart}
-            >
-              Get Started
-            </button>
-          )}
-        </div>
+
         <div className="flex flex-grow justify-center items-center p-2">
           <div className="grid grid-cols-3 grid-rows-3 gap-4">
             {[...Array(9)].map((_, index) => (
@@ -90,15 +94,40 @@ const HumanBenchMark = () => {
                 key={index}
                 onClick={() => handlePlayerClick(index + 1)}
                 className={`aspect-square flex items-center justify-center rounded-lg p-10 
-                  ${highlighted === index + 1 ? "bg-yellow-500" : "bg-pink-500"}
-                  ${
-                    playerSequence.includes(index + 1) ? "opacity-50" : ""
-                  } cursor-pointer`}
+                  ${highlighted === index + 1 ? "bg-white" : "bg-slate-500"}
+                 cursor-pointer hover:bg-slate-300 hover:scale-105`}
               >
-                {index + 1}
+                {showNumber ? index + 1 : " "}
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="flex justify-center items-center pb-10 gap-3">
+          {
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={handleShowNumber}
+            >
+              Hiện số
+            </button>
+          }
+          {!isStarted && (
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={handleStart}
+            >
+              Bắt đầu
+            </button>
+          )}
+          {gameContinute && (
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={handleStart}
+            >
+              Chơi tiếp
+            </button>
+          )}
         </div>
       </div>
     </>
