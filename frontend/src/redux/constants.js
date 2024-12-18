@@ -1,6 +1,6 @@
 export const BASE_URL =
   process.env.NODE_ENV === "production"
-    ? "https://todolist-app-d0wu.onrender.com"
+    ? "https://gamemultiplayer-hf9k.onrender.com"
     : "";
 
 export const USERS_URL = `${BASE_URL}/api/users`;
