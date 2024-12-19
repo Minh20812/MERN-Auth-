@@ -49,7 +49,7 @@ const Games = () => {
 
       {/* Portfolio Section */}
       <div className="bg-transparent border-2 border-white rounded-lg relative grid items-center justify-center md:row-span-3 md:col-span-3 md:overflow-hidden">
-        <Link to="/games/snake">
+        <Link to="/games/number-memory">
           <img
             src="https://st.gamevui.vn/images/image/2024/02/22/sau-an-tao-4-hd01.jpg"
             alt="Game 4"

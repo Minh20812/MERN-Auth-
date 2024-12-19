@@ -6,6 +6,7 @@ import Games from "../screens/SideScreens/Game/Games";
 import Snake from "../screens/SideScreens/Game/Snake";
 import Sudoku from "../screens/SideScreens/Game/Sudoku";
 import HumanBenchMark from "../screens/SideScreens/Game/HumanBenchMark";
+import NumberMemory from "../screens/SideScreens/Game/NumberMemory";
 
 const MainRouter = () => {
   return (
@@ -23,6 +24,7 @@ const MainRouter = () => {
             <Route path="/games/snake" element={<Snake />} />
             <Route path="/games/sudoku" element={<Sudoku />} />
             <Route path="/games/HumanBenchMark" element={<HumanBenchMark />} />
+            <Route path="/games/number-memory" element={<NumberMemory />} />
           </Routes>
         </div>
       </div>
