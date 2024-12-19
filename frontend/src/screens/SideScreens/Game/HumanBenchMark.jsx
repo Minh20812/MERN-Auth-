@@ -1,77 +1,64 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import BreadCrumb from "../components/BreadCrumb";
 
 const HumanBenchMark = () => {
-  const [highlighted, setHighlighted] = useState(null); // Ô đang sáng
-  const [sequence, setSequence] = useState([]); // Thứ tự ô sáng
-  const [playerSequence, setPlayerSequence] = useState([]); // Lựa chọn của người chơi
-  const [isStarted, setIsStarted] = useState(false); // Trạng thái khởi động
-  const [isGameOver, setIsGameOver] = useState(false); // Trạng thái game
+  const [highlighted, setHighlighted] = useState(null);
+  const [sequence, setSequence] = useState([]);
+  const [playerSequence, setPlayerSequence] = useState([]);
   const [level, setLevel] = useState(0);
-  const [gameContinute, setGameContinute] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [isReadyForNextLevel, setIsReadyForNextLevel] = useState(false);
   const [showNumber, setShowNumber] = useState(false);
 
-  useEffect(() => {
-    let timeout;
+  const generateSequence = (length) => {
+    return Array.from({ length }, () => Math.floor(Math.random() * 9) + 1);
+  };
 
-    if (isStarted && sequence.length < level) {
-      timeout = setTimeout(() => {
-        // Lọc ra các số chưa sáng
-        const availableNumbers = [...Array(9).keys()].map((i) => i + 1);
+  const playSequence = (newSequence) => {
+    newSequence.forEach((number, index) => {
+      setTimeout(() => {
+        setHighlighted(number);
+        setTimeout(() => setHighlighted(null), 500);
+      }, index * 1000);
+    });
+  };
 
-        // Chọn ngẫu nhiên một số chưa sáng
-        const randomIndex = Math.floor(Math.random() * availableNumbers.length);
-        const randomNumber = availableNumbers[randomIndex];
+  const startLevel = () => {
+    const newLevel = level + 1;
+    const newSequence = generateSequence(newLevel);
 
-        // Hiển thị ô sáng trong thời gian ngắn
-        setHighlighted(randomNumber);
-        setSequence((prev) => [...prev, randomNumber]);
+    setLevel(newLevel);
+    setSequence(newSequence);
+    setPlayerSequence([]);
+    setIsGameOver(false);
+    setIsReadyForNextLevel(false);
 
-        // Tắt ô sau 500ms
-        setTimeout(() => {
-          setHighlighted(null);
-        }, 300);
-      }, 700);
-    }
+    setTimeout(() => playSequence(newSequence), 1000);
+  };
 
-    return () => clearTimeout(timeout); // Dọn dẹp timeout khi component unmount
-  }, [isStarted, sequence, level]);
-
-  const handleStart = () => {
-    if (level >= 9) {
-      alert("You've reached the maximum level!");
-      return;
-    }
-    setLevel((prev) => prev + 1);
-    setGameContinute(false);
-    setHighlighted(null);
+  const restartGame = () => {
+    setLevel(0);
     setSequence([]);
     setPlayerSequence([]);
-    setIsStarted(true);
     setIsGameOver(false);
+    setIsReadyForNextLevel(false);
+    setHighlighted(null);
   };
 
   const handlePlayerClick = (number) => {
-    if (isGameOver || !isStarted || sequence.length === 0) return;
+    if (isGameOver || isReadyForNextLevel) return;
 
     setPlayerSequence((prev) => {
       const newSequence = [...prev, number];
-
-      // Kiểm tra thứ tự
       const isCorrect = sequence[newSequence.length - 1] === number;
 
       if (!isCorrect) {
-        setIsGameOver(true); // Sai thì kết thúc game
-        alert("Thua game!");
-      } else if (
-        newSequence.length === sequence.length &&
-        isCorrect &&
-        sequence.length < 9
-      ) {
-        setGameContinute(true);
-      } else if (sequence.length === 9) {
         setIsGameOver(true);
-        alert("Thắng rồi");
+        return prev;
+      }
+
+      if (newSequence.length === sequence.length) {
+        setIsReadyForNextLevel(true);
       }
 
       return newSequence;
@@ -79,58 +66,80 @@ const HumanBenchMark = () => {
   };
 
   const handleShowNumber = () => {
-    setShowNumber(!showNumber);
+    setShowNumber((prev) => !prev);
   };
 
   return (
-    <>
-      <div className="h-screen w-full flex flex-col bg-gray-900 text-white rounded-2xl overflow-hidden">
-        <BreadCrumb />
+    <div className="h-screen w-full flex flex-col bg-gray-900 text-white rounded-2xl overflow-hidden">
+      <BreadCrumb />
 
-        <div className="flex flex-grow justify-center items-center p-2">
-          <div className="grid grid-cols-3 grid-rows-3 gap-4">
-            {[...Array(9)].map((_, index) => (
-              <div
-                key={index}
-                onClick={() => handlePlayerClick(index + 1)}
-                className={`aspect-square flex items-center justify-center rounded-lg p-10 
-                  ${highlighted === index + 1 ? "bg-white" : "bg-slate-500"}
-                 cursor-pointer hover:bg-slate-300 hover:scale-105`}
-              >
-                {showNumber ? index + 1 : " "}
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="flex justify-center items-center font-bold">
+        <h1 className=" text-5xl">Level: {level}</h1>
+      </div>
 
-        <div className="flex justify-center items-center pb-10 gap-3">
-          {
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={handleShowNumber}
+      <div className="flex flex-grow justify-center items-center p-2">
+        <div className="grid grid-cols-3 grid-rows-3 gap-4">
+          {[...Array(9)].map((_, index) => (
+            <div
+              key={index}
+              onClick={() => handlePlayerClick(index + 1)}
+              className={`aspect-square flex items-center justify-center rounded-lg p-10 
+                ${highlighted === index + 1 ? "bg-white" : "bg-slate-500"} 
+                cursor-pointer hover:bg-slate-300 hover:scale-105`}
             >
-              Hiện số
-            </button>
-          }
-          {!isStarted && (
+              {showNumber ? index + 1 : ""}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex flex-col items-center pb-10 gap-3">
+        <div className=" flex gap-3">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={handleShowNumber}
+          >
+            Hiện số
+          </button>
+
+          {!isGameOver && level === 0 && (
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={handleStart}
+              onClick={startLevel}
             >
               Bắt đầu
             </button>
           )}
-          {gameContinute && (
+
+          {!isGameOver && isReadyForNextLevel && (
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={handleStart}
+              onClick={startLevel}
             >
-              Chơi tiếp
+              Tiếp tục
+            </button>
+          )}
+
+          {isGameOver && (
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              onClick={restartGame}
+            >
+              Chơi lại
             </button>
           )}
         </div>
+
+        {isGameOver && (
+          <>
+            <p className="text-red-500 font-bold text-center">
+              Bạn đã chinh phục đến Level: {level}. Dãy số đúng:{" "}
+              {sequence.join(", ")}
+            </p>
+          </>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

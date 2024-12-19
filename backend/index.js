@@ -18,6 +18,7 @@ app.use(
     origin: [
       "https://mern-auth-five-sooty.vercel.app",
       "https://mern-auth-2sjz41ky1-minh20812s-projects.vercel.app",
+      "http://localhost:5173/",
     ],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
